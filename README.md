@@ -1,4 +1,4 @@
-# Wallet V4
+# Wallet V2
 
 A mobile-first AI personal finance companion built with Next.js, OpenAI Responses API, local browser persistence, Recharts, and browser voice recognition.
 
