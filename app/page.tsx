@@ -101,16 +101,39 @@ export default function WalletApp() {
       if (!res.ok) throw new Error(data.error || "Agent request failed");
       const operations = (data.operations || []) as AgentOperation[];
       setState(s => {
-        const updated = applyAgentOperations({ ...s, messages: nextMessages }, operations);
+        const updated = applyAgentOperations(
+          { ...s, messages: nextMessages },
+          operations
+        );
+      
+        const assistantMsg: ChatMessage = {
+          id: uid(),
+          role: "assistant",
+          text: data.reply,
+          createdAt: new Date().toISOString(),
+        };
+      
         return {
           ...updated,
-          messages: [...nextMessages, { id: uid(), role: "assistant", text: data.reply, createdAt: new Date().toISOString() }].slice(-30),
+          messages: [...nextMessages, assistantMsg].slice(-30),
         };
       });
-    } catch (e) {
-      const text = e instanceof Error ? e.message : "Something went wrong.";
-      setState(s => ({ ...s, messages: [...nextMessages, { id: uid(), role: "assistant", text: `I couldn't complete that: ${text}`, createdAt: new Date().toISOString() }] }));
-    } finally {
+      } catch (e) {
+        const text = e instanceof Error ? e.message : "Something went wrong.";
+      
+        const errorMsg: ChatMessage = {
+          id: uid(),
+          role: "assistant",
+          text: `I couldn't complete that: ${text}`,
+          createdAt: new Date().toISOString(),
+        };
+      
+        setState(s => ({
+          ...s,
+          messages: [...nextMessages, errorMsg],
+        }));
+      } 
+      finally {
       setBusy(false);
     }
   }
