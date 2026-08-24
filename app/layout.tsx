@@ -1,16 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import RegisterServiceWorker from "./register-sw";
 
 export const metadata: Metadata = {
   title: "Wallet",
   description: "Your personal AI-powered finance companion",
-  manifest: "/manifest.webmanifest",
   applicationName: "Wallet",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Wallet",
-  },
+
+  manifest: "/manifest.webmanifest",
+
   icons: {
     icon: [
       {
@@ -24,16 +22,28 @@ export const metadata: Metadata = {
         type: "image/png",
       },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
+  },
+
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Wallet",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F97316",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#F97316",
 };
 
 export default function RootLayout({
@@ -43,7 +53,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <RegisterServiceWorker />
+        {children}
+      </body>
     </html>
   );
 }
